@@ -20,7 +20,7 @@ jobs:
           changelog-generator-opt: "emojis=true"
           allow-initial-development-versions: true
           force-bump-patch-version: true
-          prerelease: github.event_name == 'pull_request'
+          prerelease: ${{ github.event_name == 'pull_request' }}
       - name: Set up Git
         if: steps.semrel.outputs.version != ''
         env:
