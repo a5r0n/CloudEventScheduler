@@ -21,6 +21,8 @@ jobs:
           allow-initial-development-versions: true
           force-bump-patch-version: true
           prerelease: ${{ github.event_name == 'pull_request' }}
+          changelog-file: CHANGELOG.md
+          update-file: .version
       - name: Set up Git
         if: steps.semrel.outputs.version != ''
         env:
@@ -28,7 +30,12 @@ jobs:
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}.git
+      - name: Commit
+        if: steps.semrel.outputs.version != ''
+        run: |
+          git add .version
+          git commit -m "chore(release): Bump version to ${{ steps.semrel.outputs.version }}"
       - name: Update major tag
         if: steps.semrel.outputs.version != ''
         run: |
