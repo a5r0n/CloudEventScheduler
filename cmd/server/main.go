@@ -50,6 +50,7 @@ func handleTaskPayload(c *fiber.Ctx) error {
 	queue := c.Params("queue")
 	at := c.Query("at")
 	dealy := c.Query("delay")
+	retention := c.Query("retention")
 
 	var opts []asynq.Option
 
@@ -74,6 +75,18 @@ func handleTaskPayload(c *fiber.Ctx) error {
 
 	if queue != "" {
 		opts = append(opts, asynq.Queue(queue))
+	}
+
+	if t, err := time.ParseDuration(retention); err != nil {
+		opts = append(opts, asynq.Retention(t))
+	} else if retention == "" {
+		// TODO: default retention from config
+		opts = append(opts, asynq.Retention(time.Hour))
+	} else {
+		return c.Status(400).JSON(fiber.Map{
+			"success": false,
+			"error":   "retention must be a duration",
+		})
 	}
 
 	if c.BodyParser(&t) != nil {
