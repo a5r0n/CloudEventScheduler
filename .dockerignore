@@ -72,4 +72,6 @@ go.work
 
 Dockerfile
 .*.yml
-.semrel/
+.semrel
+deploy
+.git

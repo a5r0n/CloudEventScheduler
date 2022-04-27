@@ -20,7 +20,7 @@ RUN CGO_ENABLED=0 go build -o ./out/ ./cmd/...
 FROM alpine:3.9 
 RUN apk add ca-certificates --no-cache 
 
-COPY --from=build_base /tmp/build/out/* /app/*
+COPY --from=build_base /tmp/build/out/ /app
 
 # This container exposes port 8080 to the outside world
 EXPOSE 8080
