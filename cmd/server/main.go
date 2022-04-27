@@ -77,11 +77,11 @@ func handleTaskPayload(c *fiber.Ctx) error {
 		opts = append(opts, asynq.Queue(queue))
 	}
 
-	if t, err := time.ParseDuration(retention); err != nil {
-		opts = append(opts, asynq.Retention(t))
-	} else if retention == "" {
+	if retention == "" {
 		// TODO: default retention from config
 		opts = append(opts, asynq.Retention(time.Hour))
+	} else if t, err := time.ParseDuration(retention); err != nil {
+		opts = append(opts, asynq.Retention(t))
 	} else {
 		return c.Status(400).JSON(fiber.Map{
 			"success": false,
