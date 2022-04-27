@@ -1,10 +1,14 @@
-## 0.1.17 (2022-04-27)
+## 0.1.18 (2022-04-27)
 
 #### 🐞 Bug Fixes
 
-* Add retention param (2b29b9a3)
+* **api:** fix Retention parsing (4d9a3f40)
 
 #### 🚧 Chores
 
-* **release:** Bump version to 0.1.16 (3a8dee08)
+* **release:** Bump version to 0.1.17 (07f62bb6)
+
+#### 🔁 CI
+
+* **deploy:** Add asynqmon deployment (bec4ae31)
 
