@@ -34,7 +34,7 @@ jobs:
         if: steps.semrel.outputs.version != ''
         run: |
           sed -i -r 's@(appVersion: "v)[0-9]+\.[0-9]+\.[0-9]+[^ ]*(")@\1${{ steps.semrel.outputs.version }}\2@g' deploy/cloudeventscheduler/Chart.yaml
-          echo '{{ steps.semrel.outputs.version }}' > .version
+          echo "${{ steps.semrel.outputs.version }}" > .version
           git add .version CHANGELOG.md deploy/cloudeventscheduler/Chart.yaml
           git commit -m "chore(release): Bump version to ${{ steps.semrel.outputs.version }}"
       - name: Push to master
