@@ -1,10 +1,10 @@
-## 0.1.16 (2022-04-27)
+## 0.1.17 (2022-04-27)
 
 #### 🐞 Bug Fixes
 
-* bump workflow (74a9a233)
+* Add retention param (2b29b9a3)
 
 #### 🚧 Chores
 
-* **release:** Bump version to 0.1.15 (515b8dfd)
+* **release:** Bump version to 0.1.16 (3a8dee08)
 
