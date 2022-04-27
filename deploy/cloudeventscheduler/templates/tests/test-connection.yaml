@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "cloudeventscheduler.fullname" . }}-test-connection"
+  labels:
+    {{- include "cloudeventscheduler.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "cloudeventscheduler.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

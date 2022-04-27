@@ -12,8 +12,12 @@ func (q *Queue) RunWorker() {
 
 	log.Printf(" [*] Starting worker for %s", q.Name)
 	cmd.GracefullyShutdown(
-		func() error { return q.worker.Run(asynq.HandlerFunc(q.handle)) },
-		func() error { return nil },
+		func() error {
+			return q.worker.Run(asynq.HandlerFunc(q.handle))
+		},
+		func() error {
+			return nil
+		},
 	)
 
 	log.Printf(" [*] Stopping worker for %s", q.Name)

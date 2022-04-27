@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloudeventscheduler.fullname" . }}
+  labels:
+    {{- include "cloudeventscheduler.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cloudeventscheduler.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloudeventscheduler.fullname" . }}-scheduler
+  labels:
+    {{- include "cloudeventscheduler.labels" . | nindent 4 }}
+    app.kubernetes.io/component: scheduler
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cloudeventscheduler.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: scheduler

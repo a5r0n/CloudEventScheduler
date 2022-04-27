@@ -1,0 +1,19 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "cloudeventscheduler.fullname" . }}-env
+{{- with .Values.env }}
+data:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "cloudeventscheduler.fullname" . }}
+{{- with .Values.config }}
+data:
+  '.config': |
+    {{- toYaml . | nindent 4 }}
+{{- end }}
+---
