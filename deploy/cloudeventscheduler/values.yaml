@@ -11,6 +11,15 @@ config:
   database:
     dsn: ""
 
+monitor:
+  enabled: false
+  repository: hibiken/asynqmon
+  tag: 0.7.0
+  port: 8080
+  prometheus: ""
+  enableMetricsExporter: false
+  readOnly: false
+
 env: {}
 
 image:
@@ -49,7 +58,7 @@ securityContext:
 
 service:
   type: ClusterIP
-  port: 3000
+  port: 80
 
 ingress:
   enabled: false

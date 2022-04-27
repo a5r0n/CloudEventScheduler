@@ -31,7 +31,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: server
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -45,7 +45,7 @@ spec:
               mountPath: /etc/asynqevents
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.config.server.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -107,7 +107,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: worker
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -171,7 +171,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: scheduler
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -185,7 +185,7 @@ spec:
               mountPath: /etc/asynqevents
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.config.server.port | default 3000 }}
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -213,4 +213,84 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+---
+{{- if .Values.monitor.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cloudeventscheduler.fullname" . }}-monitor
+  labels:
+    {{- include "cloudeventscheduler.labels" . | nindent 4 }}
+    app.kubernetes.io/component: asynqmon
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "cloudeventscheduler.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: scheduler
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+        prometheus.io/scrape: "{{ .Values.monitor.enableMetricsExporter | default "false" }}"
+        prometheus.io/port: "{{ .Values.monitor.port | default "8080" }}"
+        prometheus.io/path: '/metrics'
+      {{- end }}
+      labels:
+        {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: scheduler
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: asynqmon
+          image: "{{ .Values.monitor.repository }}:{{ .Values.monitor.tag | required "asynqmon image tag must be specified" }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PORT
+              value: "{{ .Values.monitor.port | default "8080" }}"
+            - name: REDIS_URL
+              value: "{{ .Values.config.redis | required "redis url must be specified" }}"
+            - name: PROMETHEUS_ADDR
+              value: "{{ .Values.monitor.prometheus }}"
+            - name: ENABLE_METRICS_EXPORTER
+              value: "{{ .Values.monitor.enableMetricsExporter | default "false" }}"
+            - name: READ_ONLY
+              value: "{{ .Values.monitor.readOnly | default "false" }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.monitor.port | default 8080 }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "cloudeventscheduler.fullname" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
 ---
