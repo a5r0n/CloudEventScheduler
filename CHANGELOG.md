@@ -1,10 +1,10 @@
-## 0.1.15 (2022-04-27)
+## 0.1.16 (2022-04-27)
 
 #### 🐞 Bug Fixes
 
-* wtf .version delted again (f7587dcb)
+* bump workflow (74a9a233)
 
 #### 🚧 Chores
 
-* **release:** Bump version to 0.1.14 (dfd7e547)
+* **release:** Bump version to 0.1.15 (515b8dfd)
 

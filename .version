@@ -1,1 +1,1 @@
-{{ steps.semrel.outputs.version }}
+0.1.16
