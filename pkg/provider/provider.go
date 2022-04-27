@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"context"
 	"log"
 
 	"github.com/hibiken/asynq"
@@ -40,4 +41,12 @@ func (p *DatabaseBasedConfigProvider) GetConfigs() ([]*asynq.PeriodicTaskConfig,
 	}
 
 	return configs, nil
+}
+
+func (p *DatabaseBasedConfigProvider) PingContext(ctx context.Context) error {
+	db, err := p.db.DB()
+	if err != nil {
+		return err
+	}
+	return db.PingContext(ctx)
 }

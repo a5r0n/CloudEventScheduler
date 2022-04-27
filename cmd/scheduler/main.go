@@ -6,7 +6,9 @@ import (
 
 	"github.com/a5r0n/cloudeventscheduler/internal/cmd"
 	"github.com/a5r0n/cloudeventscheduler/pkg/provider"
+	"github.com/alexliesenfeld/health"
 	"github.com/go-playground/validator/v10"
+	"github.com/gofiber/adaptor/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/hibiken/asynq"
 	"github.com/spf13/viper"
@@ -97,6 +99,23 @@ func main() {
 	}
 
 	app := fiber.New(fiber.Config{DisableStartupMessage: true})
+	// Create a new Checker.
+	checker := health.NewChecker(
+		// Set the time-to-live for our cache to 1 second (default).
+		health.WithCacheDuration(1*time.Second),
+		// Configure a global timeout that will be applied to all checks.
+		health.WithTimeout(10*time.Second),
+
+		// Add a checker that will be check the database connection.
+		health.WithCheck(health.Check{
+			Name:    "database",      // A unique check name.
+			Timeout: 2 * time.Second, // A check specific timeout.
+			Check:   provider.PingContext,
+		}),
+	)
+
+	app.Get("/health", adaptor.HTTPHandlerFunc(health.NewHandler(checker)))
+
 	app.Get("/", handleGetAllSchudleEvents)
 	app.Post("/", handleNewSchudleEvent)
 	app.Delete("/:id", handleDeleteSchudleEvent)
