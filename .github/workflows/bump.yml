@@ -22,7 +22,7 @@ jobs:
           force-bump-patch-version: true
           prerelease: ${{ github.event_name == 'pull_request' }}
           changelog-file: CHANGELOG.md
-          update-file: .version
+          custom-arguments: --version-file
       - name: Set up Git
         if: steps.semrel.outputs.version != ''
         env:
