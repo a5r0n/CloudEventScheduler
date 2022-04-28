@@ -18,6 +18,8 @@ spec:
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
+        checksum/config: {{ toJson $.Values.config | sha256sum }}
+        checksum/env: {{ toJson $.Values.env | sha256sum }}
       {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
@@ -94,6 +96,8 @@ spec:
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
+        checksum/config: {{ toJson $.Values.config | sha256sum }}
+        checksum/env: {{ toJson $.Values.env | sha256sum }}
       {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
@@ -158,6 +162,8 @@ spec:
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
+        checksum/config: {{ toJson $.Values.config | sha256sum }}
+        checksum/env: {{ toJson $.Values.env | sha256sum }}
       {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
@@ -238,6 +244,9 @@ spec:
         prometheus.io/scrape: "{{ .Values.monitor.enableMetricsExporter | default "false" }}"
         prometheus.io/port: "{{ .Values.monitor.port | default "8080" }}"
         prometheus.io/path: '/metrics'
+        checksum/config: {{ toJson $.Values.config | sha256sum }}
+        checksum/env: {{ toJson $.Values.env | sha256sum }}
+        checksum/monitor: {{ toJson $.Values.monitor | sha256sum }}
       {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
