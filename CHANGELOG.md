@@ -1,10 +1,10 @@
-## 0.1.19 (2022-04-28)
-
-#### 🐞 Bug Fixes
-
-* **deploy:** typos (2e1a1cb2)
+## 0.1.20 (2022-04-28)
 
 #### 🚧 Chores
 
-* **release:** Bump version to 0.1.18 (ba02dcc7)
+* **release:** Bump version to 0.1.19 (a96a2567)
+
+#### 🔁 CI
+
+* **deploy:** Add checksum to deployments {config,env,monitor} (d800356e)
 
