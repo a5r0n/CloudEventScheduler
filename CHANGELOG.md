@@ -1,14 +1,10 @@
-## 0.1.18 (2022-04-27)
+## 0.1.19 (2022-04-28)
 
 #### 🐞 Bug Fixes
 
-* **api:** fix Retention parsing (4d9a3f40)
+* **deploy:** typos (2e1a1cb2)
 
 #### 🚧 Chores
 
-* **release:** Bump version to 0.1.17 (07f62bb6)
-
-#### 🔁 CI
-
-* **deploy:** Add asynqmon deployment (bec4ae31)
+* **release:** Bump version to 0.1.18 (ba02dcc7)
 
