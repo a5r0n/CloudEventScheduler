@@ -38,7 +38,9 @@ func (q *Queue) handle(ctx context.Context, t *asynq.Task) error {
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(p.Url)
 	req.Header.SetMethod(p.Method)
-	req.SetBodyRaw([]byte(p.Body))
+	if p.Body.String() != "" {
+		req.SetBody(p.Body)
+	}
 
 	var headers Headers
 	if err := json.Unmarshal(p.Headers, &headers); err != nil {

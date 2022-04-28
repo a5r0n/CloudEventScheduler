@@ -15,7 +15,7 @@ type TaskPayload interface {
 type WebhookTaskPayload struct {
 	Url     string         `json:"url" validate:"required"`
 	Method  string         `json:"method" validate:"required"`
-	Body    datatypes.JSON `json:"body" validate:"required"`
+	Body    datatypes.JSON `json:"body"`
 	Headers datatypes.JSON `json:"headers"`
 }
 
