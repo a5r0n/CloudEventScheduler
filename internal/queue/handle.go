@@ -37,7 +37,7 @@ func (q *Queue) handle(ctx context.Context, t *asynq.Task) error {
 	log.Printf(" [*] Send Webhook event to %s for %s %s", p.Url, t.Type(), t.ResultWriter().TaskID())
 	req := fasthttp.AcquireRequest()
 	req.SetRequestURI(p.Url)
-	req.Header.SetMethod(fasthttp.MethodPost)
+	req.Header.SetMethod(p.Method)
 	req.SetBodyRaw([]byte(p.Body))
 
 	var headers Headers
