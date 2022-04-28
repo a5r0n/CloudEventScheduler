@@ -229,7 +229,7 @@ spec:
   selector:
     matchLabels:
       {{- include "cloudeventscheduler.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: scheduler
+      app.kubernetes.io/component: asynqmon
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -241,7 +241,7 @@ spec:
       {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: scheduler
+        app.kubernetes.io/component: asynqmon
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
