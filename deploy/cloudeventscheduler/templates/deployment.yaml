@@ -15,12 +15,12 @@ spec:
       app.kubernetes.io/component: api
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
         checksum/config: {{ toJson $.Values.config | sha256sum }}
         checksum/env: {{ toJson $.Values.env | sha256sum }}
-      {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: api
@@ -93,12 +93,12 @@ spec:
       app.kubernetes.io/component: worker
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
         checksum/config: {{ toJson $.Values.config | sha256sum }}
         checksum/env: {{ toJson $.Values.env | sha256sum }}
-      {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: worker
@@ -159,12 +159,12 @@ spec:
       app.kubernetes.io/component: scheduler
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
         checksum/config: {{ toJson $.Values.config | sha256sum }}
         checksum/env: {{ toJson $.Values.env | sha256sum }}
-      {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: scheduler
@@ -238,16 +238,16 @@ spec:
       app.kubernetes.io/component: asynqmon
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
         prometheus.io/scrape: "{{ .Values.monitor.enableMetricsExporter | default "false" }}"
         prometheus.io/port: "{{ .Values.monitor.port | default "8080" }}"
         prometheus.io/path: '/metrics'
         checksum/config: {{ toJson $.Values.config | sha256sum }}
         checksum/env: {{ toJson $.Values.env | sha256sum }}
         checksum/monitor: {{ toJson $.Values.monitor | sha256sum }}
-      {{- end }}
       labels:
         {{- include "cloudeventscheduler.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: asynqmon
