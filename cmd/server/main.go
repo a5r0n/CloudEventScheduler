@@ -112,6 +112,17 @@ func handleGetTaskInfo(c *fiber.Ctx) error {
 	}
 }
 
+func handleDeleteTask(c *fiber.Ctx) error {
+	queue := c.Params("queue")
+	taskid := c.Params("taskid")
+	log.Printf(" [*] Delete task for %s %s", queue, taskid)
+	if err := inspector.DeleteTask(queue, taskid); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": err.Error(), "success": false})
+	} else {
+		return c.Status(200).JSON(fiber.Map{"success": true})
+	}
+}
+
 func handleGetQueue(c *fiber.Ctx) error {
 	queue := c.Params("queue")
 	queueInfo, err := inspector.GetQueueInfo(queue)
@@ -141,7 +152,9 @@ func main() {
 	app.Post("/:queue/:typename", handleTaskPayload)
 
 	app.Get("/:queue/", handleGetQueue)
+
 	app.Get("/:queue/:taskid", handleGetTaskInfo)
+	app.Delete("/:queue/:taskid", handleDeleteTask)
 
 	cmd.ServeFiberApp(app, viper.GetInt("server.port"))
 
