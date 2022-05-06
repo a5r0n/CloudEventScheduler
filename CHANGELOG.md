@@ -1,15 +1,10 @@
-## 0.1.22 (2022-04-28)
+## 0.2.0 (2022-05-06)
 
-#### 🐞 Bug Fixes
+#### 🎁 Feature
 
-* make WebhookTaskPayload.Body optional (386a5f49)
+* Delete task by ID (b3b0d865)
 
 #### 🚧 Chores
 
-* **release:** Bump version to 0.1.21 (0c862e2e)
-
-#### 🔁 CI
-
-* **deploy:** fix pods annotations & bump Chart (ac8997de)
-* **deploy:** Add replicaCount & bump Chart (87fde528)
+* **release:** Bump version to 0.1.22 (f1134ee1)
 
