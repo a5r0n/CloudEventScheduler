@@ -6,12 +6,39 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/hibiken/asynq"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
+
+type AppConfig struct {
+	Asynq struct {
+		DefaultRetention time.Duration `mapstructure:"retention" validate:"required"`
+	} `mapstructure:"asynq" validate:"required"`
+}
+
+func GetAppConfig() AppConfig {
+	if Config == (AppConfig{}) {
+
+		// validate config struct
+		if err := viper.Unmarshal(&Config); err != nil {
+			log.Fatalf("Error unmarshalling config file, %s\n", err)
+		}
+		validate := validator.New()
+
+		if err := validate.Struct(Config); err != nil {
+			log.Fatalf("Error validating config file, %s\n", err)
+		}
+	}
+
+	return Config
+}
+
+var Config AppConfig
 
 func SetupAsynq() (client *asynq.Client, inspector *asynq.Inspector) {
 	redisOpts := GetRedisOpts()
@@ -39,7 +66,7 @@ func GetRedisOpts() asynq.RedisClientOpt {
 }
 
 // SetupViper is a helper function to setup viper with config paths, env, and flags.
-func SetupViper() {
+func SetupViper() AppConfig {
 	setupPFlags()
 	viper.SetEnvPrefix("asynq")
 	viper.AutomaticEnv()
@@ -51,9 +78,13 @@ func SetupViper() {
 	viper.AddConfigPath("$HOME/.asynqevents")
 	viper.AddConfigPath(".")
 
+	viper.SetDefault("asynq.retention", time.Hour*24*7)
+
 	if err := viper.ReadInConfig(); err != nil {
 		log.Printf("Error reading config file, %s\n", err)
 	}
+
+	return GetAppConfig()
 }
 
 func setupPFlags() {

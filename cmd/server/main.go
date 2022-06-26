@@ -19,6 +19,7 @@ import (
 )
 
 var (
+	config    cmd.AppConfig
 	client    *asynq.Client
 	inspector *asynq.Inspector
 	validate  = validator.New()
@@ -78,8 +79,7 @@ func handleTaskPayload(c *fiber.Ctx) error {
 	}
 
 	if retention == "" {
-		// TODO: default retention from config
-		opts = append(opts, asynq.Retention(time.Hour))
+		opts = append(opts, asynq.Retention(config.Asynq.DefaultRetention))
 	} else if t, err := time.ParseDuration(retention); err != nil {
 		opts = append(opts, asynq.Retention(t))
 	} else {
@@ -134,9 +134,8 @@ func handleGetQueue(c *fiber.Ctx) error {
 }
 
 func main() {
-	cmd.SetupViper()
+	config = cmd.SetupViper()
 	cmd.EnsureRedisConfigs()
-
 	client, inspector = cmd.SetupAsynq()
 	app := fiber.New(fiber.Config{DisableStartupMessage: true})
 

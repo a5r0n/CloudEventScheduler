@@ -16,6 +16,7 @@ import (
 
 var (
 	validate = validator.New()
+	config   cmd.AppConfig
 )
 
 func handleNewSchudleEvent(c *fiber.Ctx) error {
@@ -72,7 +73,7 @@ func handleGetAllSchudleEvents(c *fiber.Ctx) error {
 }
 
 func main() {
-	cmd.SetupViper()
+	config = cmd.SetupViper()
 	cmd.EnsureRedisConfigs()
 	cmd.EnsureDatabaseConfigs()
 

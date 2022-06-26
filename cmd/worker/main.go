@@ -6,8 +6,10 @@ import (
 	"github.com/hibiken/asynq"
 )
 
+var config cmd.AppConfig
+
 func main() {
-	cmd.SetupViper()
+	config = cmd.SetupViper()
 	q := queue.NewQueue("webhook:")
 	q.SetupWorker(asynq.Config{Concurrency: 10})
 	q.RunWorker()
