@@ -1,0 +1,31 @@
+name: Push Helm chart to OCI
+
+on:
+  push:
+    tags:
+      - "v*"
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        id: checkout
+      - uses: azure/setup-helm@v4
+        id: install_helm
+      - name: Build Helm chart
+        run: |
+          helm package ./deploy/cloudeventscheduler
+      - name: Login to Helm OCI
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ${{ vars.OCI_REGISTRY }} --username ${{ github.repository_owner }} --password-stdin
+      - name: Push Helm chart to OCI
+        run: |
+          helm push cloudeventscheduler-*.tgz oci://${{ vars.OCI_REGISTRY }}/${{ vars.OCI_REPOSITORY }}
+          rm cloudeventscheduler-*.tgz -f
