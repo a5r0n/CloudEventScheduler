@@ -106,19 +106,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-redis:
-  enabled: true
-  architecture: standalone
-  auth:
-    enabled: false
-  master:
-    persistence:
-      size: 1Gi
-
-postgresql:
-  enabled: false
-  postgresqlMaxConnections: 300
-  postgresqlExtendedConf.sharedBuffers: 300MB
-  persistence:
-    size: 10Gi
